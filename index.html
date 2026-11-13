@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +5,7 @@
   <title>KostKu Pro — Manajemen Kamar, Bukti Transfer, Alarm &amp; Keuangan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -15,7 +14,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'] },
           colors: {
             brand: {
               50: '#eff6ff',
@@ -59,10 +58,15 @@
       --theme-accent: #e11d48;
       --theme-soft: #fff1f2;
     }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
+    html, body {
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
       -webkit-tap-highlight-color: transparent;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background: #f1f5f9;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.45;
     }
     .theme-gradient {
       background: linear-gradient(135deg, var(--theme-from) 0%, var(--theme-via) 55%, var(--theme-to) 100%);
@@ -73,22 +77,25 @@
     .theme-text { color: var(--theme-accent); }
     .theme-bg-soft { background-color: var(--theme-soft); }
 
-    /* Phone Shell Mode vs Fullscreen Desktop Mode */
+    /* Edge-to-edge on real phones; sleek centered frame only on desktop screens */
     body.mode-hp #appShell {
-      max-width: 440px;
+      width: 100%;
+      max-width: 100%;
       margin: 0 auto;
-      min-height: 100vh;
+      min-height: 100dvh;
       background: #f8fafc;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 0 8px rgba(255, 255, 255, 0.08);
     }
     @media (min-width: 640px) {
       body.mode-hp {
-        padding: 1.25rem 0;
+        background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%);
+        padding: 1rem 0;
       }
       body.mode-hp #appShell {
-        min-height: calc(100vh - 2.5rem);
-        border-radius: 2.25rem;
+        max-width: 430px;
+        min-height: calc(100vh - 2rem);
+        border-radius: 1.75rem;
         overflow-x: hidden;
+        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(148, 163, 184, 0.25);
       }
     }
     body.mode-wide {
@@ -144,66 +151,65 @@
   <!-- Main Mobile/App Container -->
   <div id="appShell" class="relative flex flex-col justify-between pb-24">
 
-    <!-- Phone Status Bar Decoration (Visible in HP Mode) -->
-    <div id="phoneTopNotch" class="theme-gradient text-white/90 px-5 pt-2 pb-1 flex items-center justify-between text-[11px] font-semibold select-none">
+    <!-- Hidden desktop-only helper bar -->
+    <div id="phoneTopNotch" class="hidden">
       <span id="liveClockNotch">09:25</span>
-      <div class="flex items-center gap-2">
-        <button id="btnToggleViewMode" type="button" class="px-2 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-[10px] font-bold text-white transition" title="Ubah Tampilan HP / Layar Lebar">
-          📱 Mode HP
-        </button>
-        <button id="btnCloudIndicator" type="button" class="px-2 py-0.5 rounded-full bg-white/15 hover:bg-white/25 text-[10px] font-bold text-white flex items-center gap-1 transition" title="Status Sinkronisasi Google Sheets Cloud">
-          <span id="cloudDot" class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>
-          <span id="cloudStatusText">Lokal</span>
-        </button>
-      </div>
+      <button id="btnToggleViewMode" type="button">📱 Mode HP</button>
     </div>
 
-    <!-- Top App Header with Editable Logo & Kost Name -->
-    <header class="sticky top-0 z-30 theme-gradient text-white shadow-md">
-      <div class="px-4 py-3.5 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-3 min-w-0">
+    <!-- Clean, Proportional Mobile Header -->
+    <header class="sticky top-0 z-30 theme-gradient text-white shadow-sm">
+      <div class="px-3.5 pt-3 pb-3 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0 flex-1">
           <!-- Clickable Logo -->
-          <button id="btnEditBranding" type="button" title="Klik untuk ganti Logo & Nama Kost" class="relative group w-12 h-12 rounded-2xl bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center text-white shadow-inner shrink-0 overflow-hidden">
+          <button id="btnEditBranding" type="button" title="Klik untuk ganti Logo & Nama Kost" class="relative group w-10 h-10 rounded-xl bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center text-white shadow-inner shrink-0 overflow-hidden">
             <img id="kostLogoImg" src="" alt="Logo Kost" class="hidden w-full h-full object-cover" />
             <div id="kostLogoDefault" class="flex items-center justify-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" />
               </svg>
             </div>
-            <span class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[9px] font-bold transition">EDIT</span>
+            <span class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[8px] font-bold transition">EDIT</span>
           </button>
 
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <div class="flex items-center gap-1.5">
-              <h1 id="kostTitleDisplay" class="text-base font-extrabold tracking-tight truncate">KostKu Pro</h1>
-              <button id="btnQuickEditBrand" type="button" title="Ganti Nama Kost, Logo & Warna" class="p-1 rounded-lg bg-white/15 hover:bg-white/25 text-white shrink-0">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <h1 id="kostTitleDisplay" class="text-[15px] font-extrabold tracking-tight leading-snug truncate">KostKu Pro</h1>
+              <button id="btnQuickEditBrand" type="button" title="Ganti Nama Kost, Logo & Warna" class="p-1 rounded-md bg-white/15 hover:bg-white/25 text-white shrink-0">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
               </button>
             </div>
-            <p id="kostSubtitleDisplay" class="text-[11px] text-white/85 truncate">Manajemen Kamar, Bukti Transfer &amp; Keuangan</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <button id="btnCloudIndicator" type="button" class="px-1.5 py-0.5 rounded-md bg-black/20 hover:bg-black/30 text-[10px] font-semibold text-white flex items-center gap-1 shrink-0 transition" title="Status Sinkronisasi Google Sheets Cloud">
+                <span id="cloudDot" class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>
+                <span id="cloudStatusText">Lokal</span>
+              </button>
+              <p id="kostSubtitleDisplay" class="text-[11px] text-white/85 truncate">Manajemen Kost &amp; Keuangan</p>
+            </div>
           </div>
         </div>
 
-        <!-- Quick Header Actions -->
+        <!-- Compact Header Actions -->
         <div class="flex items-center gap-1.5 shrink-0">
-          <button id="btnAlarmSoundHeader" type="button" title="Tes / Status Alarm" class="relative p-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white transition min-h-[40px] min-w-[40px] flex items-center justify-center">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <button id="btnAlarmSoundHeader" type="button" title="Tes / Status Alarm" class="relative w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 text-white transition flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span id="headerBellDot" class="hidden absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-400 ring-2 ring-white"></span>
+            <span id="headerBellDot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-400 ring-2 ring-white"></span>
           </button>
-          <button id="btnSettingsModal" type="button" title="Pengaturan, Tema & Backup" class="px-2.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-[11px] font-bold transition min-h-[40px] flex items-center gap-1"><span>Data &amp; HP</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <button id="btnSettingsModal" type="button" title="Pengaturan, Tema & Backup" class="px-2.5 h-9 rounded-xl bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold transition flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
+            <span>Data &amp; HP</span>
           </button>
         </div>
       </div>
 
-      <!-- Desktop/Tablet Pill Navigation (kept for compatibility & quick access) -->
+      <!-- Desktop/Tablet Pill Navigation -->
       <nav class="hidden px-4 pb-2.5 items-center gap-1 overflow-x-auto no-scrollbar" id="desktopNav">
         <button data-tab="kamar" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-white text-blue-600 shadow-sm">Kamar &amp; Penghuni</button>
         <button data-tab="alarm" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition text-white/90 hover:bg-white/10 flex items-center gap-1">
@@ -215,39 +221,42 @@
       </nav>
     </header>
 
-    <!-- Active Alarm Banner -->
-    <div id="urgentAlarmBanner" class="hidden bg-gradient-to-r from-rose-600 to-orange-500 text-white shadow-inner">
-      <div class="px-4 py-2.5 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <span class="p-1.5 rounded-lg bg-white/20 shrink-0">
+    <!-- Active Alarm Banner (Stacked cleanly for mobile screens so text is never cut off) -->
+    <div id="urgentAlarmBanner" class="hidden bg-gradient-to-r from-rose-600 to-orange-500 text-white shadow-xs">
+      <div class="px-3.5 py-2.5 flex flex-col gap-2">
+        <div class="flex items-start gap-2">
+          <span class="p-1.5 rounded-lg bg-white/20 shrink-0 mt-0.5">
             <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </span>
-          <div class="min-w-0">
-            <p class="text-xs font-bold truncate" id="urgentBannerTitle">Ada kamar jatuh tempo!</p>
-            <p class="text-[11px] text-rose-100 truncate" id="urgentBannerSub">Segera cek alarm kamar.</p>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold leading-snug" id="urgentBannerTitle">Ada kamar jatuh tempo!</p>
+            <p class="text-[11px] text-rose-100 leading-tight mt-0.5" id="urgentBannerSub">Segera cek alarm kamar.</p>
           </div>
         </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button id="btnBannerPlayAlarm" type="button" class="px-2.5 py-1.5 rounded-lg bg-white text-rose-700 text-[11px] font-bold hover:bg-rose-50 transition">Bunyikan Alarm</button>
-          <button id="btnBannerViewAlarms" type="button" class="px-2.5 py-1.5 rounded-lg bg-rose-900/60 text-white text-[11px] font-semibold hover:bg-rose-900 transition">Lihat Alarm</button>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnBannerPlayAlarm" type="button" class="py-1.5 px-3 rounded-lg bg-white text-rose-700 text-[11px] font-bold hover:bg-rose-50 transition text-center">Bunyikan Alarm</button>
+          <button id="btnBannerViewAlarms" type="button" class="py-1.5 px-3 rounded-lg bg-rose-900/60 text-white text-[11px] font-semibold hover:bg-rose-900 transition text-center">Lihat Alarm</button>
         </div>
       </div>
     </div>
 
     <!-- Main Content Area -->
-    <main class="flex-1 px-3.5 py-4 space-y-4">
+    <main class="flex-1 px-3 py-3 space-y-3">
 
-      <!-- Period Selector & Quick Add Room Card -->
-      <section class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between gap-2">
-        <div class="min-w-0">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Periode Aktif</span>
-          <h2 class="text-sm font-extrabold text-slate-900 truncate" id="activePeriodLabel">November 2026</h2>
+      <!-- Period Selector & Quick Add Room Card (Clean 2-row layout on mobile so month never truncates) -->
+      <section class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Periode Aktif:</span>
+          </div>
+          <h2 class="text-[13px] font-extrabold text-slate-900" id="activePeriodLabel">November 2026</h2>
         </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <input id="monthPicker" type="month" aria-label="Pilih Bulan" class="px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[38px]" />
-          <button id="btnAddRoomTop" type="button" class="px-3 py-1.5 rounded-xl theme-btn text-white text-xs font-bold shadow-sm transition min-h-[38px] flex items-center gap-1">
+        <div class="grid grid-cols-2 gap-2">
+          <input id="monthPicker" type="month" aria-label="Pilih Bulan" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 h-9" />
+          <button id="btnAddRoomTop" type="button" class="w-full px-3 py-2 rounded-xl theme-btn text-white text-xs font-bold shadow-xs transition h-9 flex items-center justify-center gap-1">
             <span>+ Tambah Kamar</span>
           </button>
         </div>
@@ -419,7 +428,7 @@
     </main>
 
     <!-- Bottom Navigation Bar (Always Visible in HP Shell) -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] z-30 bg-white/95 backdrop-blur border-t border-slate-200 flex items-center justify-around px-1 py-1.5 shadow-lg" id="bottomNavBar">
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full sm:max-w-[430px] z-30 bg-white/95 backdrop-blur border-t border-slate-200 flex items-center justify-around px-1 py-1.5 shadow-lg" id="bottomNavBar">
       <button data-tab="kamar" class="mobile-nav-btn flex-1 py-1.5 flex flex-col items-center gap-0.5 text-blue-600 font-bold text-[11px]">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" /></svg>
         <span>Kamar</span>
@@ -1106,7 +1115,7 @@
         document.body.classList.toggle('mode-hp', isHp);
         document.body.classList.toggle('mode-wide', !isHp);
         const bottomNav = document.getElementById('bottomNavBar');
-        bottomNav.style.maxWidth = isHp ? '440px' : '1200px';
+        bottomNav.style.maxWidth = isHp ? (window.innerWidth < 640 ? '100%' : '430px') : '1200px';
         document.getElementById('btnToggleViewMode').textContent = isHp ? '📱 Mode HP' : '💻 Layar Lebar';
         const roomsGrid = document.getElementById('roomsGrid');
         roomsGrid.className = isHp ? 'grid grid-cols-1 gap-3.5' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4';
@@ -1237,22 +1246,28 @@
         }).length;
 
         document.getElementById('roomKpiGrid').innerHTML = `
-          <div class="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-3.5 rounded-2xl shadow-sm">
-            <p class="text-[11px] font-medium text-blue-100">Kamar Terisi / Total</p>
-            <p class="text-xl font-extrabold mt-0.5">${occupied} <span class="text-xs font-normal text-blue-200">/ ${totalRooms} Kamar</span></p>
+          <div class="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-3 rounded-2xl shadow-xs">
+            <p class="text-[11px] font-medium text-blue-100">Kamar Terisi</p>
+            <div class="flex items-baseline gap-1 mt-0.5">
+              <span class="text-lg font-extrabold leading-none">${occupied}</span>
+              <span class="text-[11px] font-medium text-blue-200">/ ${totalRooms} Kamar</span>
+            </div>
           </div>
-          <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-3.5 rounded-2xl shadow-sm">
+          <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-3 rounded-2xl shadow-xs">
             <p class="text-[11px] font-medium text-emerald-100">Kamar Kosong</p>
-            <p class="text-xl font-extrabold mt-0.5">${empty} <span class="text-xs font-normal text-emerald-100">Tersedia</span></p>
+            <div class="flex items-baseline gap-1 mt-0.5">
+              <span class="text-lg font-extrabold leading-none">${empty}</span>
+              <span class="text-[11px] font-medium text-emerald-100">Tersedia</span>
+            </div>
           </div>
-          <div class="col-span-2 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
-            <div>
-              <p class="text-[11px] font-semibold text-slate-500">Status Tagihan Bulan ${MONTH_NAMES[parseInt(state.activeMonth.split('-')[1], 10) - 1]}</p>
-              <p class="text-xs font-bold ${unpaidCount > 0 ? 'text-rose-600' : 'text-emerald-600'} mt-0.5">
-                ${unpaidCount > 0 ? `${unpaidCount} Kamar Belum Bayar` : 'Semua Kamar Terisi Sudah Lunas'}
+          <div class="col-span-2 bg-white px-3.5 py-2.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <p class="text-[11px] font-medium text-slate-500 truncate">Tagihan ${MONTH_NAMES[parseInt(state.activeMonth.split('-')[1], 10) - 1]}</p>
+              <p class="text-xs font-bold ${unpaidCount > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                ${unpaidCount > 0 ? `${unpaidCount} Kamar Belum Bayar` : 'Semua Kamar Lunas ✓'}
               </p>
             </div>
-            <span class="px-2.5 py-1 rounded-xl text-xs font-extrabold ${unpaidCount > 0 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
+            <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${unpaidCount > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
               ${occupied - unpaidCount}/${occupied} Lunas
             </span>
           </div>
